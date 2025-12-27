@@ -13,19 +13,23 @@
 // </summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-
 namespace TimerDemo
 {
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Runtime.CompilerServices;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Threading;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private const string DATEFORMAT = "dd.MM.yyyy HH:mm";
+        private DispatcherTimer dispatcherTimer;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
@@ -57,7 +61,7 @@ namespace TimerDemo
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnCloseApplication, "Click", this.OnCloseApplication);
-
+            WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnDispatcherTimer, "Click", this.OnBtnDispatcherTimerClick);
         }
 
         private void OnCloseApplication(object sender, RoutedEventArgs e)
@@ -78,6 +82,22 @@ namespace TimerDemo
             {
                 e.Cancel = true;
             }
+        }
+
+        private void OnBtnDispatcherTimerClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void InitDispatcherTimer()
+        {
+            this.dispatcherTimer = new DispatcherTimer();
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            this.dispatcherTimer.Start();
+            this.dispatcherTimer.Tick += new EventHandler(
+                delegate (object s, EventArgs a)
+                {
+                    //this.dtStatusBarDate.Text = DateTime.Now.ToString(DATEFORMAT,CultureInfo.CurrentCulture);
+                });
         }
 
         #region INotifyPropertyChanged implementierung
