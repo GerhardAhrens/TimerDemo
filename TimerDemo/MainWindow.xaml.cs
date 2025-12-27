@@ -27,7 +27,7 @@ namespace TimerDemo
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private const string DATEFORMAT = "dd.MM.yyyy HH:mm";
+        private const string DATEFORMAT = "dd.MM.yyyy HH:mm:ss";
         private DispatcherTimer dispatcherTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -57,6 +57,35 @@ namespace TimerDemo
             }
         }
 
+        private string _Timervarianten;
+
+        public string Timervarianten
+        {
+            get { return _Timervarianten; }
+            set
+            {
+                if (this._Timervarianten != value)
+                {
+                    this._Timervarianten = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _TimerResult;
+
+        public string TimerResult
+        {
+            get { return _TimerResult; }
+            set
+            {
+                if (this._TimerResult != value)
+                {
+                    this._TimerResult = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -86,18 +115,37 @@ namespace TimerDemo
 
         private void OnBtnDispatcherTimerClick(object sender, RoutedEventArgs e)
         {
+            this.InitDispatcherTimer();
         }
 
         private void InitDispatcherTimer()
         {
-            this.dispatcherTimer = new DispatcherTimer();
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            this.dispatcherTimer.Start();
-            this.dispatcherTimer.Tick += new EventHandler(
-                delegate (object s, EventArgs a)
-                {
-                    //this.dtStatusBarDate.Text = DateTime.Now.ToString(DATEFORMAT,CultureInfo.CurrentCulture);
-                });
+            if (this.dispatcherTimer == null)
+            {
+                this.dispatcherTimer = new DispatcherTimer();
+            }
+
+            if (this.dispatcherTimer.IsEnabled == false)
+            {
+                this.dispatcherTimer.IsEnabled = true;
+                this.dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+                this.dispatcherTimer.Start();
+                this.dispatcherTimer.Tick += new EventHandler(
+                    delegate (object s, EventArgs a)
+                    {
+                        this.TimerResult = DateTime.Now.ToString(DATEFORMAT, CultureInfo.CurrentCulture);
+                    });
+
+                this.Timervarianten = "DispatcherTimer gestartet.";
+            }
+            else
+            {
+                this.dispatcherTimer.IsEnabled = false;
+                this.dispatcherTimer.Stop();
+                this.dispatcherTimer = null;
+                this.TimerResult = string.Empty;
+                this.Timervarianten = string.Empty;
+            }
         }
 
         #region INotifyPropertyChanged implementierung
