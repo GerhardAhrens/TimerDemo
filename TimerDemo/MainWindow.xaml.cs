@@ -29,6 +29,8 @@ namespace TimerDemo
     {
         private const string DATEFORMAT = "dd.MM.yyyy HH:mm:ss";
         private DispatcherTimer dispatcherTimer;
+        private Timer threadingTimer;
+        private System.Timers.Timer systemTimersTimer;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
